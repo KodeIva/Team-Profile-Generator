@@ -10,6 +10,7 @@ const render = require("./src/page-template.js");
 
 let team = []
 
+// asking manager's details
 function manager() {
  inquirer.prompt([
     {
@@ -20,12 +21,12 @@ function manager() {
     {
      type: 'input',
      name:'id',
-     message: "Please enter the manager's employe ID:"
+     message: "Please enter the manager's employee ID:"
     },
     {
      type: 'input',
      name:'email',
-     message: "Please enter the manager's email:"
+     message: "Please enter the manager's email address:"
     },
      {
      type: 'input',
@@ -37,11 +38,10 @@ function manager() {
   console.log(newManager);
   team.push(newManager)
   userChoice()
-  console.log(team);
  })
 }
 
-
+// asking for engineer's details
 function engineer() {
   inquirer.prompt([
     {
@@ -57,12 +57,12 @@ function engineer() {
     {
      type: 'input',
      name:'email',
-     message: "Please enter the engineer's email:"
+     message: "Please enter the engineer's email address:"
     },
      {
      type: 'input',
      name:'gitHub',
-     message: "Please enter the engineer's GitHub:"
+     message: "Please enter the engineer's GitHub username:"
     },
   ]).then((data) => {
     let newEngineer = new Engineer(data.name,data.id,data.email,data.gitHub)
@@ -71,6 +71,7 @@ function engineer() {
 })
 }
 
+// asking for intern's detail
 function intern() {
   inquirer.prompt([
     {
@@ -86,7 +87,7 @@ function intern() {
     {
      type: 'input',
      name:'email',
-     message: "Please enter the intern's email:"
+     message: "Please enter the intern's email address:"
     },
      {
      type: 'input',
@@ -94,7 +95,8 @@ function intern() {
      message: "Please enter the intern's school name:"
     },
   ]).then((data) => {
-    team.push(new Intern(data.name,data.id,data.email,data.schoolName))
+    let newIntern = new Intern(data.name,data.id,data.email,data.schoolName)
+    team.push(newIntern)
     userChoice()
 })
 }
@@ -109,13 +111,13 @@ function userChoice() {
     }
  ]).then((responses) => {
    console.log(responses);
-   // enter engineer details
+   // add engineer details
    if(responses.choice === "Engineer") {
     console.log('engineer');
     engineer()
    }
    
-   // ennter inter details
+   // add inter details
    if(responses.choice === "Intern") {
     console.log('intern');
     intern()
@@ -131,7 +133,7 @@ function userChoice() {
 
 
 async function startProgram() {
-   let { name, id, email, officeNumber } = await inquirer
+   let { name,id,email,officeNumber } = await inquirer
        .prompt([
             {
                 type: 'input',
@@ -141,7 +143,7 @@ async function startProgram() {
             {
                 type: 'input',
                 name: 'id',
-                message: "What is the manager's id number?"
+                message: "What is the manager's employee ID number?"
             },
             {
                 type: 'input',
@@ -151,10 +153,10 @@ async function startProgram() {
             {
                 type: 'input',
                 name: 'officeNumber',
-                message: "What is the office number?"
+                message: "What is the manager's office number?"
             }
         ])
-    team.push(new Manager(name, id, email, officeNumber))
+    team.push(new Manager(name,id,email,officeNumber))
     userChoice()
 }
 startProgram()
