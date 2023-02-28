@@ -10,36 +10,66 @@ const render = require("./src/page-template.js");
 
 let team = []
 
-// asking manager's details
-function manager() {
- inquirer.prompt([
-    {
-     type: 'input',
-     name: 'name',
-     message: "What is your manager's name?",
-    },
-    {
-     type: 'input',
-     name:'id',
-     message: "Please enter the manager's employee ID:"
-    },
-    {
-     type: 'input',
-     name:'email',
-     message: "Please enter the manager's email address:"
-    },
-     {
-     type: 'input',
-     name:'officeNumber',
-     message: "Please enter the manager's office number:"
-    },
-]).then((data) => {
-  let newManager = new Manager(data.name,data.id,data.email,data.officeNumber)
-  console.log(newManager);
-  team.push(newManager)
-  userChoice()
+async function startProgram() {
+   let { name,id,email,officeNumber } = await inquirer
+       .prompt([
+            {
+                type: 'input',
+                name: 'name',
+                message: "What is the manager's name?",
+            },
+            {
+                type: 'input',
+                name: 'id',
+                message: "What is the manager's employee ID number?"
+            },
+            {
+                type: 'input',
+                name: 'email',
+                message: "What is the manager's email address?"
+            },
+            {
+                type: 'input',
+                name: 'officeNumber',
+                message: "What is the manager's office number?"
+            }
+        ])
+    team.push(new Manager(name,id,email,officeNumber))
+    userChoice()
+}
+startProgram()
+
+// after entering manager's details user can choose to add other profiles or finish
+function userChoice() {
+  inquirer.prompt ([
+   {
+        type: "list",
+        message: "Add Team Member?",
+        name: "choice",
+        choices: ["Engineer", "Intern", "Finish Building Team"]
+    }
+ ]).then((responses) => {
+   console.log(responses);
+   // add engineer details
+   if(responses.choice === "Engineer") {
+    console.log('engineer');
+    engineer()
+   }
+   
+   // add intern details
+   if(responses.choice === "Intern") {
+    console.log('intern');
+    intern()
+   }
+
+   // finish and generating HTML 
+   if(responses.choice === "Finish Building Team") {
+      let htmlDoc = render(team)
+      fs.writeFile(outputPath,htmlDoc)
+   }
  })
 }
+
 
 // asking for engineer's details
 function engineer() {
@@ -100,63 +130,3 @@ function intern() {
     userChoice()
 })
 }
-
-function userChoice() {
-  inquirer.prompt ([
-   {
-        type: "list",
-        message: "Add Team Member?",
-        name: "choice",
-        choices: ["Engineer", "Intern", "Finish Building Team"]
-    }
- ]).then((responses) => {
-   console.log(responses);
-   // add engineer details
-   if(responses.choice === "Engineer") {
-    console.log('engineer');
-    engineer()
-   }
-   
-   // add inter details
-   if(responses.choice === "Intern") {
-    console.log('intern');
-    intern()
-   }
-
-   // finish and generating HTML 
-   if(responses.choice === "Finish Building Team") {
-      let htmlDoc = render(team)
-      fs.writeFile(outputPath,htmlDoc)
-   }
- })
-}
-
-
-async function startProgram() {
-   let { name,id,email,officeNumber } = await inquirer
-       .prompt([
-            {
-                type: 'input',
-                name: 'name',
-                message: "What is the manager's name?",
-            },
-            {
-                type: 'input',
-                name: 'id',
-                message: "What is the manager's employee ID number?"
-            },
-            {
-                type: 'input',
-                name: 'email',
-                message: "What is the manager's email address?"
-            },
-            {
-                type: 'input',
-                name: 'officeNumber',
-                message: "What is the manager's office number?"
-            }
-        ])
-    team.push(new Manager(name,id,email,officeNumber))
-    userChoice()
-}
-startProgram()
